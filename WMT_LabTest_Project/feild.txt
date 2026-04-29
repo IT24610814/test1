@@ -1,0 +1,208 @@
+## Question 1 — All Possible Field Types
+
+### Files you always change for any new field:
+
+| File | Why |
+|---|---|
+| backend/models/Item.js | Defines what data MongoDB saves |
+| frontend/src/components/ItemForm.jsx | Collects value from user |
+| frontend/src/components/ItemCard.jsx | Displays value on Home page |
+
+---
+
+## All Possible Fields They Can Give You:
+
+### 1. 📝 Text Field (like Serial Number, Brand, Color, Location)
+js
+// backend/models/Item.js
+serialNumber: {
+  type: String,        // text data
+  required: [true, "Serial Number is required"],  // must fill in
+  trim: true,          // removes extra spaces
+},
+
+jsx
+// ItemForm.jsx
+<label>Serial Number</label>
+<input
+  name="serialNumber"
+  value={formData.serialNumber}
+  onChange={handleChange}
+  required
+/>
+
+jsx
+// ItemCard.jsx
+<p><strong>Serial Number:</strong> {item.serialNumber}</p>
+
+> *type: String* — use when value is text/words
+> *trim: true* — use on text fields to clean up accidental spaces. Numbers don't need trim
+> *required* — use when the field must be filled. Leave out if optional
+
+---
+
+### 2. 🔢 Number Field (like Discount %, Price, Quantity, Rating, Stock)
+js
+// backend/models/Item.js
+discountPercentage: {
+  type: Number,        // numeric data
+  default: 0,          // if not filled, saves as 0
+  min: [0, "Cannot be negative"],
+  max: [100, "Cannot exceed 100"],
+},
+
+jsx
+// ItemForm.jsx
+<label>Discount Percentage (%)</label>
+<input
+  type="number"
+  name="discountPercentage"
+  value={formData.discountPercentage}
+  onChange={handleChange}
+  min="0"
+  max="100"
+  placeholder="0"
+/>
+
+jsx
+// ItemCard.jsx
+<p><strong>Discount:</strong> {item.discountPercentage}%</p>
+
+> *type: Number* — use when value is a number
+> *default: 0* — use when field is optional, saves 0 if left empty
+> *No trim* — trim only works on strings, never use on numbers
+> *min/max* — use to limit the range of numbers
+
+---
+
+### 3. ✅ True/False Field (like Available, InStock, Featured)
+js
+// backend/models/Item.js
+isAvailable: {
+  type: Boolean,       // true or false only
+  default: true,       // saves as true if not specified
+},
+
+jsx
+// ItemForm.jsx
+<label>Available</label>
+<input
+  type="checkbox"
+  name="isAvailable"
+  checked={formData.isAvailable}
+  onChange={(e) => setFormData(prev => ({
+    ...prev,
+    isAvailable: e.target.checked
+  }))}
+/>
+
+jsx
+// ItemCard.jsx
+<p><strong>Available:</strong> {item.isAvailable ? "Yes" : "No"}</p>
+
+> *type: Boolean* — use when value is only yes/no, true/false
+> *default: true* — most items start as available
+
+---
+
+### 4. 📅 Date Field (like Manufacture Date, Expiry Date, Added Date)
+js
+// backend/models/Item.js
+manufactureDate: {
+  type: Date,          // date data
+  required: [true, "Manufacture date is required"],
+},
+
+jsx
+// ItemForm.jsx
+<label>Manufacture Date</label>
+<input
+  type="date"
+  name="manufactureDate"
+  value={formData.manufactureDate}
+  onChange={handleChange}
+  required
+/>
+
+jsx
+// ItemCard.jsx
+<p><strong>Manufacture Date:</strong> {new Date(item.manufactureDate).toLocaleDateString()}</p>
+
+> *type: Date* — use when value is a date
+> *No trim or min/max* — those don't apply to dates
+
+---
+
+### 5. 📋 Dropdown/Enum Field (like Status, Condition, Size)
+js
+// backend/models/Item.js
+condition: {
+  type: String,
+  enum: ["New", "Used", "Refurbished"],  // only these values allowed
+  default: "New",
+},
+
+jsx
+// ItemForm.jsx
+<label>Condition</label>
+<select name="condition" value={formData.condition} onChange={handleChange}>
+  <option value="New">New</option>
+  <option value="Used">Used</option>
+  <option value="Refurbished">Refurbished</option>
+</select>
+
+jsx
+// ItemCard.jsx
+<p><strong>Condition:</strong> {item.condition}</p>
+
+> *enum* — use when value must be one of a fixed list of options
+> *type: String* — still a string, enum just restricts what strings are allowed
+
+---
+
+### Quick Reference Table:
+
+| Field Example | type | trim | required | default | min/max |
+|---|---|---|---|---|---|
+| Serial Number | String | ✅ | ✅ | ❌ | ❌ |
+| Brand Name | String | ✅ | ✅ | ❌ | ❌ |
+| Discount % | Number | ❌ | ❌ | ✅ (0) | ✅ |
+| Quantity | Number | ❌ | ✅ | ❌ | ✅ |
+| Rating | Number | ❌ | ❌ | ✅ (0) | ✅ (0-5) |
+| Is Available | Boolean | ❌ | ❌ | ✅ (true) | ❌ |
+| Expiry Date | Date | ❌ | ✅ | ❌ | ❌ |
+| Condition | String+enum | ✅ | ❌ | ✅ | ❌ |
+
+---
+
+## Question 2 — Using Different PCs
+
+*No problem at all!* 🎉 You only need your *GitHub account login* — not Vercel or Railway accounts on the PC itself.
+
+Here's why:
+
+| Platform | How it works |
+|---|---|
+| *Vercel* | Connected to GitHub — auto deploys when you push. You never need to log into Vercel from your PC |
+| *Railway* | Same — connected to GitHub. Push code → Railway auto updates |
+| *GitHub* | Just need to login once on the uni PC |
+
+### On your uni PC just do:
+
+bash
+# First time on a new PC - set your git identity
+git config --global user.name "Your Name"
+git config --global user.email "your@email.com"
+
+# Clone your repo
+git clone https://github.com/Jayodya-gveb/your-repo-name.git
+
+# Make changes, then push
+git add .
+git commit -m "your message"
+git push
+
+
+When you git push, it will ask for your *GitHub username and password* (or token) — that's all. Vercel and Railway automatically pick up the changes. You never need to touch those platforms again!
+
+> ⚠️ *One thing* — if the uni PC asks for a GitHub password, GitHub no longer accepts passwords. You need a *Personal Access Token*. Go to GitHub → Settings → Developer Settings → Personal Access Tokens → Generate one and use that as your password.
